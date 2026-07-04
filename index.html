@@ -1,0 +1,674 @@
+<title>コシクロ ｜ コミュニティサイト モック</title>
+<style>
+  :root{
+    --ink:#17140f; --ink-soft:#403a30; --bg:#f5f1e9; --surface:#ffffff;
+    --surface-2:#faf7f0; --line:#e6dfd2; --muted:#8b8175;
+    --accent:#a87b3d; --accent-deep:#845f2d; --club:#14110d;
+    --ok:#5b7a5b; --ok-bg:#eaf0e8; --warn-bg:#f3ece0; --warn:#9a7635;
+    --maxw:1120px;
+    --serif:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
+    --sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",Meiryo,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.3;text-wrap:balance;margin:0;}
+  a{color:inherit}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-deep);
+    font-weight:700;font-family:var(--sans);}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+    font-family:var(--sans);font-size:14px;font-weight:600;padding:11px 20px;border-radius:8px;
+    background:var(--accent);color:#fff;transition:background .15s;}
+  .btn:hover{background:var(--accent-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:var(--surface-2)}
+  .btn.dark{background:var(--ink)}
+  .btn.dark:hover{background:#000}
+  .btn.sm{padding:7px 13px;font-size:13px}
+  .tag{display:inline-block;font-size:12px;padding:4px 10px;border-radius:999px;
+    background:var(--warn-bg);color:var(--accent-deep);font-weight:600;line-height:1.4}
+  .tag.skill{background:#efeae0}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+    padding:3px 10px;border-radius:999px}
+  .chip.open{background:var(--warn-bg);color:var(--warn)}
+  .chip.done{background:var(--ok-bg);color:var(--ok)}
+
+  /* ---- demo switcher ---- */
+  #demobar{position:sticky;top:0;z-index:60;background:#0f0d0a;color:#e8e2d6;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:8px 24px;font-size:13px}
+  #demobar b{font-family:var(--serif);letter-spacing:.04em}
+  #demobar .seg{display:flex;background:#232019;border-radius:8px;padding:3px}
+  #demobar .seg button{background:transparent;border:none;color:#b8b0a2;cursor:pointer;
+    font-family:var(--sans);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:6px}
+  #demobar .seg button.active{background:var(--accent);color:#fff}
+  #demobar .note{color:#7c756a;margin-left:auto}
+
+  .view{display:none}
+  .view.active{display:block}
+
+  /* ---- public header ---- */
+  header.site{background:var(--club);color:#f3efe4;position:sticky;top:41px;z-index:40}
+  header.site .wrap{display:flex;align-items:center;gap:24px;height:64px}
+  .brand{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:.06em;color:#fff}
+  .brand small{font-family:var(--sans);font-size:10px;letter-spacing:.28em;display:block;
+    color:var(--accent);font-weight:700;text-transform:uppercase;margin-top:-2px}
+  header.site nav{display:flex;gap:22px;margin-left:8px}
+  header.site nav a{font-size:14px;color:#cfc7b8;text-decoration:none;padding:4px 0}
+  header.site nav a:hover{color:#fff}
+  header.site .spacer{margin-left:auto}
+
+  /* ---- hero ---- */
+  .hero{background:linear-gradient(180deg,#14110d 0%,#1d1811 100%);color:#f3efe4;
+    padding:76px 0 84px;position:relative;overflow:hidden}
+  .hero .mono{position:absolute;right:-40px;top:-30px;font-family:var(--serif);
+    font-size:340px;line-height:1;color:rgba(168,123,61,.10);font-weight:600;pointer-events:none;user-select:none}
+  .hero h1{font-size:44px;color:#fff;margin:14px 0 18px;max-width:15em}
+  .hero p{font-size:17px;color:#d8d0c2;max-width:34em;margin:0 0 28px}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero .stats{display:flex;gap:40px;margin-top:52px;flex-wrap:wrap}
+  .hero .stats div span{display:block;font-family:var(--serif);font-size:32px;color:var(--accent)}
+  .hero .stats div small{color:#a89f90;font-size:12.5px}
+
+  section{padding:66px 0}
+  section.alt{background:var(--surface)}
+  .sec-head{max-width:40em;margin-bottom:34px}
+  .sec-head h2{font-size:30px;margin:10px 0 12px}
+  .sec-head p{color:var(--ink-soft);margin:0}
+
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .alt .card{background:var(--surface-2)}
+  .card h3{font-size:19px;margin-bottom:8px}
+  .card p{margin:0;color:var(--ink-soft);font-size:14.5px}
+  .card .num{font-family:var(--serif);color:var(--accent);font-size:15px;font-weight:700}
+
+  /* owner */
+  .owner{display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:center}
+  .avatar{width:100%;aspect-ratio:1;border-radius:16px;background:
+    radial-gradient(120% 120% at 30% 20%,#3a3126,#14110d);display:flex;align-items:center;
+    justify-content:center;font-family:var(--serif);font-size:64px;color:var(--accent)}
+  .owner h2{font-size:26px;margin-bottom:6px}
+  .owner .role{color:var(--accent-deep);font-weight:700;font-size:14px;margin-bottom:14px}
+  .owner p{color:var(--ink-soft);margin:0 0 12px}
+
+  /* events */
+  .event-list{display:grid;gap:16px}
+  .event{display:grid;grid-template-columns:96px 1fr auto;gap:22px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .event .date{text-align:center;border-right:1px solid var(--line);padding-right:8px}
+  .event .date b{font-family:var(--serif);font-size:30px;display:block;line-height:1}
+  .event .date span{font-size:12px;color:var(--muted)}
+  .event .meta{font-size:13px;color:var(--muted);margin-top:4px;display:flex;gap:14px;flex-wrap:wrap}
+  .event h3{font-size:18px}
+
+  .reports{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .report{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .report .thumb{aspect-ratio:16/9;background:linear-gradient(135deg,#c9bfa9,#8a7f66);
+    display:flex;align-items:flex-end;padding:12px;color:#fff;font-size:12px;font-family:var(--serif)}
+  .report .body{padding:16px 18px}
+  .report .body span{font-size:12px;color:var(--muted)}
+  .report h3{font-size:16px;margin:6px 0 8px;line-height:1.4}
+
+  footer.site{background:var(--club);color:#a89f90;padding:40px 0;font-size:13px}
+  footer.site .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+  /* ---- member area ---- */
+  .memberbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:41px;z-index:30}
+  .memberbar .wrap{display:flex;align-items:center;gap:20px;height:60px}
+  .memberbar .brand{color:var(--ink);font-size:18px}
+  .memberbar .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft)}
+  .memberbar .who .dot{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .mtabs{display:flex;gap:6px;margin:26px 0 22px}
+  .mtabs button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 18px;
+    font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;color:var(--ink-soft)}
+  .mtabs button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .mpanel{display:none}
+  .mpanel.active{display:block}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+  .filters input{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;
+    font-family:var(--sans);font-size:14px;background:var(--surface)}
+  .fbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;
+    font-size:12.5px;cursor:pointer;color:var(--ink-soft);font-weight:600}
+  .fbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .mcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;cursor:pointer;
+    transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;gap:10px}
+  .mcard:hover{border-color:var(--accent);box-shadow:0 6px 22px rgba(20,17,13,.06)}
+  .mcard .top{display:flex;gap:12px;align-items:center}
+  .mcard .ava{width:46px;height:46px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-size:19px;color:#fff;background:var(--ink)}
+  .mcard .name{font-weight:700;font-size:15.5px}
+  .mcard .title{font-size:12.5px;color:var(--muted)}
+  .mcard .oneline{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .mcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .mcard .give{font-size:12px;color:var(--accent-deep);font-weight:600;border-top:1px dashed var(--line);padding-top:10px}
+
+  /* consult */
+  .consult-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .consult-list{display:grid;gap:14px}
+  .consult{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .consult .r1{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .consult .r1 .ava{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-family:var(--serif)}
+  .consult h3{font-size:17px;margin-bottom:6px}
+  .consult .body{color:var(--ink-soft);font-size:14px;margin:0 0 12px}
+  .consult .foot{display:flex;gap:16px;font-size:13px;color:var(--muted);align-items:center}
+  .consult .foot a{color:var(--accent-deep);font-weight:600;text-decoration:none}
+
+  /* ---- admin ---- */
+  .admin-wrap{max-width:960px}
+  .admin-head{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 6px;flex-wrap:wrap;gap:8px}
+  .admin-head h2{font-size:24px}
+  .admin-head p{color:var(--muted);font-size:13.5px;margin:0}
+  .atabs{display:flex;gap:6px;margin:20px 0}
+  .atabs button{background:transparent;border:none;border-bottom:2px solid transparent;padding:8px 4px;margin-right:16px;
+    font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;color:var(--muted)}
+  .atabs button.active{color:var(--ink);border-color:var(--accent)}
+  .apanel{display:none}.apanel.active{display:block}
+  .adminlayout{display:grid;grid-template-columns:1fr 340px;gap:26px;align-items:start}
+  .rowlist{display:grid;gap:10px}
+  .rowitem{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:12px 16px}
+  .rowitem .t{font-weight:600;font-size:14.5px}
+  .rowitem .s{font-size:12.5px;color:var(--muted)}
+  .rowitem .st{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .pub{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .pub.on{background:var(--ok-bg);color:var(--ok)}
+  .pub.off{background:#efe9df;color:var(--muted)}
+  .iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:5px 10px;
+    font-size:12px;cursor:pointer;color:var(--ink-soft)}
+  .form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;position:sticky;top:120px}
+  .form h3{font-size:16px;margin-bottom:16px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:5px}
+  .field input,.field textarea,.field select{width:100%;padding:9px 12px;border:1px solid var(--line);
+    border-radius:8px;font-family:var(--sans);font-size:13.5px;background:var(--surface-2)}
+  .field textarea{min-height:88px;resize:vertical}
+  .switchrow{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-bottom:16px;font-size:13px}
+  .toggle{width:40px;height:23px;border-radius:999px;background:#d8cfbf;position:relative;cursor:pointer;flex:none}
+  .toggle.on{background:var(--accent)}
+  .toggle::after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .15s}
+  .toggle.on::after{left:20px}
+
+  /* ---- modal ---- */
+  .overlay{position:fixed;inset:0;background:rgba(20,17,13,.55);z-index:80;display:none;
+    align-items:center;justify-content:center;padding:24px}
+  .overlay.show{display:flex}
+  .modal{background:var(--bg);border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;
+    padding:30px;position:relative}
+  .modal .x{position:absolute;top:16px;right:16px;border:none;background:var(--surface);width:34px;height:34px;
+    border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink-soft)}
+  .modal .mtop{display:flex;gap:16px;align-items:center;margin-bottom:16px}
+  .modal .ava{width:64px;height:64px;border-radius:50%;background:var(--ink);color:#fff;flex:none;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:26px}
+  .modal h3{font-size:22px}
+  .modal .title{color:var(--muted);font-size:14px}
+  .modal .block{margin-top:18px}
+  .modal .block .lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);
+    font-weight:700;margin-bottom:6px}
+  .modal .block p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .modal .tags{display:flex;gap:7px;flex-wrap:wrap}
+  .modal .actions{display:flex;gap:10px;margin-top:24px}
+
+  @media(max-width:860px){
+    .cols3,.reports,.mgrid{grid-template-columns:1fr}
+    .hero h1{font-size:34px}.hero .mono{font-size:200px}
+    .owner{grid-template-columns:1fr}.avatar{max-width:150px}
+    .event{grid-template-columns:70px 1fr;}.event .apply{grid-column:1/-1}
+    .adminlayout{grid-template-columns:1fr}.form{position:static}
+  }
+</style>
+
+<!-- ================= DEMO SWITCHER ================= -->
+<div id="demobar">
+  <b>コシクロ モック</b>
+  <div class="seg">
+    <button data-view="public" class="active">① 公開サイト</button>
+    <button data-view="member">② 会員ページ</button>
+    <button data-view="admin">③ 編集（管理）</button>
+  </div>
+  <span class="note">クリックで各画面を確認できます（デモ用ダミーデータ）</span>
+</div>
+
+<!-- ================= ① PUBLIC ================= -->
+<div class="view active" id="view-public">
+  <header class="site">
+    <div class="wrap">
+      <div class="brand">コシクロ<small>Koshikuro Community</small></div>
+      <nav>
+        <a href="#about">コシクロとは</a>
+        <a href="#owner">主宰者</a>
+        <a href="#events">イベント</a>
+        <a href="#reports">活動報告</a>
+      </nav>
+      <div class="spacer"></div>
+      <button class="btn dark sm" data-goto="member">会員ログイン</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="mono">越</div>
+    <div class="wrap">
+      <div class="eyebrow" style="color:var(--accent)">Business Community since 2019</div>
+      <h1>人と機会が、静かに循環する場所。</h1>
+      <p>コシクロは、越（こし）が主宰する約60名のビジネスパーソンのコミュニティです。
+        肩書きではなく「その人が何を持ち寄れるか」でつながり、学び合い、時に相談し合う——そんな関係を大切にしています。</p>
+      <div class="cta">
+        <button class="btn" data-goto="member">会員ページへ</button>
+        <a class="btn ghost" style="color:#f3efe4;border-color:#3a3226" href="#about">コシクロを知る</a>
+      </div>
+      <div class="stats">
+        <div><span>60</span><small>アクティブ会員</small></div>
+        <div><span>月1</span><small>定例イベント</small></div>
+        <div><span>2019</span><small>設立</small></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">About</div>
+        <h2>コシクロとは</h2>
+        <p>業種も年代も異なるメンバーが集まる、ゆるやかで濃いつながりのコミュニティ。
+          これまでFacebookグループだけで運営してきましたが、「誰がいるのか分かる」「強みを持ち寄れる」場へと形にしていきます。</p>
+      </div>
+      <div class="cols3">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>知り合える</h3>
+          <p>会員それぞれの自己紹介・強み・いま取り組んでいることが一覧に。FBの流れて消える投稿ではなく、いつでも辿れます。</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>持ち寄れる</h3>
+          <p>「これなら力になれる」「これを探している」をスキルとして共有。得意を分け合うことで、小さな協業が生まれます。</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>相談できる</h3>
+          <p>事業・キャリア・専門知識まで。困ったときに、この60人に気軽に聞ける。コシクロならではの距離感です。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="owner">
+    <div class="wrap">
+      <div class="owner">
+        <div class="avatar">越</div>
+        <div>
+          <div class="eyebrow">Founder</div>
+          <h2>越（こし）</h2>
+          <div class="role">主宰 / コシクロ 発起人</div>
+          <p>「肩書きを外して、一人の人として面白がれる関係をつくりたい」——その想いで2019年にコシクロを立ち上げました。
+            月に一度の定例会や少人数の勉強会を通じて、業種を越えた出会いの場を育てています。</p>
+          <p>このサイトは、これまで見えづらかった「仲間の顔」を可視化し、より助け合えるコミュニティにするための一歩です。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="events">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Events</div>
+        <h2>これからのイベント</h2>
+        <p>定例会・勉強会・懇親会。参加はいつでも自由です。</p>
+      </div>
+      <div class="event-list">
+        <div class="event">
+          <div class="date"><b>19</b><span>7月</span></div>
+          <div>
+            <h3>第58回 定例会：越境するキャリアの作り方</h3>
+            <div class="meta"><span>📍 表参道・会議室A</span><span>🕒 19:00–21:00</span><span>👥 定員24名</span></div>
+          </div>
+          <button class="btn sm apply">参加する</button>
+        </div>
+        <div class="event">
+          <div class="date"><b>02</b><span>8月</span></div>
+          <div>
+            <h3>朝活勉強会：生成AIを実務にどう活かすか</h3>
+            <div class="meta"><span>📍 オンライン</span><span>🕒 8:00–9:00</span><span>👥 定員40名</span></div>
+          </div>
+          <button class="btn sm apply">参加する</button>
+        </div>
+        <div class="event">
+          <div class="date"><b>23</b><span>8月</span></div>
+          <div>
+            <h3>夏の懇親会（ゲスト回）</h3>
+            <div class="meta"><span>📍 恵比寿</span><span>🕒 18:30–</span><span>👥 定員30名</span></div>
+          </div>
+          <button class="btn sm apply">参加する</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="reports">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Reports</div>
+        <h2>活動報告</h2>
+        <p>過去のイベントの様子を記録しています。編集ページから随時追加できます。</p>
+      </div>
+      <div class="reports">
+        <div class="report">
+          <div class="thumb">第57回 定例会</div>
+          <div class="body"><span>2026.06.21</span>
+            <h3>「小さく試す」を実践した6月定例会レポート</h3>
+            <p style="margin:0;font-size:13px;color:var(--muted)">登壇3名、参加22名。事業アイデアの持ち寄りが白熱しました。</p>
+          </div>
+        </div>
+        <div class="report">
+          <div class="thumb">朝活 #12</div>
+          <div class="body"><span>2026.06.07</span>
+            <h3>朝活勉強会：財務三表をやさしく読む</h3>
+            <p style="margin:0;font-size:13px;color:var(--muted)">会計が苦手な人向けの入門回。参加者から好評でした。</p>
+          </div>
+        </div>
+        <div class="report">
+          <div class="thumb">春の懇親会</div>
+          <div class="body"><span>2026.05.17</span>
+            <h3>新メンバー6名を迎えた春の懇親会</h3>
+            <p style="margin:0;font-size:13px;color:var(--muted)">恒例のゆるい自己紹介タイムで一気に距離が縮まりました。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <div><span class="brand" style="font-size:18px">コシクロ</span><br>ビジネスパーソンのためのコミュニティ</div>
+      <div>主宰：越　／　お問い合わせ：Facebookグループ・会員ページより</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= ② MEMBER ================= -->
+<div class="view" id="view-member">
+  <div class="memberbar">
+    <div class="wrap">
+      <div class="brand">コシクロ <span style="font-size:11px;color:var(--muted);font-family:var(--sans);letter-spacing:.2em">MEMBERS</span></div>
+      <div class="who">
+        <div class="dot">中</div>
+        <span>中村 淳さん</span>
+        <button class="btn ghost sm" data-goto="public">ログアウト</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="mtabs">
+      <button class="active" data-mtab="dir">会員名簿</button>
+      <button data-mtab="consult">相談ボード</button>
+      <button data-mtab="me">マイプロフィール</button>
+    </div>
+
+    <!-- directory -->
+    <div class="mpanel active" id="mp-dir">
+      <div class="filters">
+        <input id="msearch" placeholder="名前・会社・スキルで探す（例：マーケティング、士業、採用…）">
+        <button class="fbtn on" data-f="all">すべて</button>
+        <button class="fbtn" data-f="経営">経営</button>
+        <button class="fbtn" data-f="マーケ">マーケ</button>
+        <button class="fbtn" data-f="IT">IT</button>
+        <button class="fbtn" data-f="人事">人事</button>
+        <button class="fbtn" data-f="士業">士業</button>
+      </div>
+      <div class="mgrid" id="mgrid"></div>
+    </div>
+
+    <!-- consult -->
+    <div class="mpanel" id="mp-consult">
+      <div class="consult-head">
+        <div>
+          <h2 style="font-size:22px">相談ボード</h2>
+          <p style="color:var(--muted);margin:4px 0 0;font-size:14px">困りごとを投稿すると、力になれる会員が答えてくれます。</p>
+        </div>
+        <button class="btn">＋ 相談を投稿</button>
+      </div>
+      <div class="consult-list">
+        <div class="consult">
+          <div class="r1"><div class="ava">田</div><b>田村 佳奈</b>
+            <span style="color:var(--muted);font-size:13px">・2日前</span>
+            <span class="chip open" style="margin-left:auto">募集中</span></div>
+          <h3>初めての採用サイト、制作会社の選び方を教えてください</h3>
+          <p class="body">来期から新卒採用を始める予定です。採用サイトを外注したいのですが、相場観と失敗しない発注のコツを知りたいです。</p>
+          <div class="foot"><span>💬 返信 4件</span><span>👀 いいね 9</span><a href="#" onclick="return false">返信する →</a></div>
+        </div>
+        <div class="consult">
+          <div class="r1"><div class="ava">S</div><b>佐藤 亮</b>
+            <span style="color:var(--muted);font-size:13px">・5日前</span>
+            <span class="chip done" style="margin-left:auto">解決済み</span></div>
+          <h3>タイ進出のリサーチ、詳しい方いませんか？</h3>
+          <p class="body">東南アジア展開を検討中です。現地の商習慣に明るい方にお話を伺えたら…とてもありがたいです。</p>
+          <div class="foot"><span>💬 返信 7件</span><span>👀 いいね 15</span><a href="#" onclick="return false">スレッドを見る →</a></div>
+        </div>
+        <div class="consult">
+          <div class="r1"><div class="ava">M</div><b>森 悠子</b>
+            <span style="color:var(--muted);font-size:13px">・1週間前</span>
+            <span class="chip open" style="margin-left:auto">募集中</span></div>
+          <h3>チームの1on1がうまく回りません。運用のコツは？</h3>
+          <p class="body">マネージャー10名で1on1を導入したものの形骸化気味です。定着させた事例があれば伺いたいです。</p>
+          <div class="foot"><span>💬 返信 6件</span><span>👀 いいね 12</span><a href="#" onclick="return false">返信する →</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- my profile -->
+    <div class="mpanel" id="mp-me">
+      <div style="max-width:640px">
+        <h2 style="font-size:22px;margin-bottom:6px">マイプロフィール</h2>
+        <p style="color:var(--muted);margin:0 0 20px;font-size:14px">ここで自己紹介・強み・相談にのれることを編集できます。名簿に反映されます。</p>
+        <div class="form" style="position:static">
+          <div class="field"><label>お名前</label><input value="中村 淳"></div>
+          <div class="field"><label>肩書き・会社</label><input value="株式会社アイデンティティ / 代表 ・ HRコンサルタント"></div>
+          <div class="field"><label>ひとこと自己紹介</label>
+            <textarea>HR領域を軸に、組織開発と人事評価制度づくりを支援しています。タイ在住経験あり。</textarea></div>
+          <div class="field"><label>強み・スキル（カンマ区切り）</label><input value="人事評価, 組織開発, タイ進出, HRテック"></div>
+          <div class="field"><label>力になれること</label>
+            <textarea>評価制度の設計、1on1やフィードバックの型づくり、東南アジア進出の初期相談。</textarea></div>
+          <div class="field"><label>いま探していること</label><input value="AIプロダクトのUI/UXに強い方、業務委託の開発パートナー"></div>
+          <button class="btn">保存する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ③ ADMIN ================= -->
+<div class="view" id="view-admin">
+  <div class="memberbar">
+    <div class="wrap">
+      <div class="brand">コシクロ <span style="font-size:11px;color:var(--muted);font-family:var(--sans);letter-spacing:.2em">管理</span></div>
+      <div class="who"><div class="dot" style="background:var(--ink)">越</div><span>越さん（管理者）</span></div>
+    </div>
+  </div>
+
+  <div class="wrap admin-wrap">
+    <div class="admin-head">
+      <div><h2>コンテンツ編集</h2></div>
+      <p>イベント情報と活動報告を、ここから追加・編集・公開できます。</p>
+    </div>
+    <div class="atabs">
+      <button class="active" data-atab="ev">イベント</button>
+      <button data-atab="rep">活動報告</button>
+    </div>
+
+    <!-- events admin -->
+    <div class="apanel active" id="ap-ev">
+      <div class="adminlayout">
+        <div>
+          <div class="rowlist">
+            <div class="rowitem">
+              <div><div class="t">第58回 定例会：越境するキャリアの作り方</div><div class="s">7/19（土）19:00 ・ 表参道</div></div>
+              <div class="st"><span class="pub on">公開中</span><button class="iconbtn">編集</button></div>
+            </div>
+            <div class="rowitem">
+              <div><div class="t">朝活勉強会：生成AIを実務にどう活かすか</div><div class="s">8/2（土）8:00 ・ オンライン</div></div>
+              <div class="st"><span class="pub on">公開中</span><button class="iconbtn">編集</button></div>
+            </div>
+            <div class="rowitem">
+              <div><div class="t">夏の懇親会（ゲスト回）</div><div class="s">8/23（土）18:30 ・ 恵比寿</div></div>
+              <div class="st"><span class="pub off">下書き</span><button class="iconbtn">編集</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="form">
+          <h3>＋ 新しいイベント</h3>
+          <div class="field"><label>タイトル</label><input placeholder="第59回 定例会：…"></div>
+          <div class="field"><label>日時</label><input placeholder="2026/09/13 19:00–21:00"></div>
+          <div class="field"><label>場所</label><input placeholder="表参道 / オンライン など"></div>
+          <div class="field"><label>定員</label><input placeholder="24"></div>
+          <div class="field"><label>概要</label><textarea placeholder="どんな会か、ひとことで。"></textarea></div>
+          <div class="switchrow"><span>公開する</span><div class="toggle" data-toggle></div></div>
+          <button class="btn" style="width:100%;justify-content:center">保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- reports admin -->
+    <div class="apanel" id="ap-rep">
+      <div class="adminlayout">
+        <div>
+          <div class="rowlist">
+            <div class="rowitem">
+              <div><div class="t">「小さく試す」を実践した6月定例会レポート</div><div class="s">2026.06.21 ・ 第57回定例会</div></div>
+              <div class="st"><span class="pub on">公開中</span><button class="iconbtn">編集</button></div>
+            </div>
+            <div class="rowitem">
+              <div><div class="t">朝活勉強会：財務三表をやさしく読む</div><div class="s">2026.06.07 ・ 朝活#12</div></div>
+              <div class="st"><span class="pub on">公開中</span><button class="iconbtn">編集</button></div>
+            </div>
+            <div class="rowitem">
+              <div><div class="t">新メンバー6名を迎えた春の懇親会</div><div class="s">2026.05.17 ・ 春の懇親会</div></div>
+              <div class="st"><span class="pub on">公開中</span><button class="iconbtn">編集</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="form">
+          <h3>＋ 活動報告を書く</h3>
+          <div class="field"><label>タイトル</label><input placeholder="◯月定例会レポート"></div>
+          <div class="field"><label>対象イベント</label>
+            <select><option>第58回 定例会</option><option>朝活勉強会 #13</option><option>夏の懇親会</option></select></div>
+          <div class="field"><label>写真（任意）</label><input placeholder="画像をアップロード / URL"></div>
+          <div class="field"><label>本文</label><textarea placeholder="当日の様子や学びを記録。"></textarea></div>
+          <div class="switchrow"><span>公開する</span><div class="toggle on" data-toggle></div></div>
+          <button class="btn" style="width:100%;justify-content:center">保存する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== member modal ===== -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+  // ---- view switching ----
+  const views = {public:'view-public',member:'view-member',admin:'view-admin'};
+  function goto(v){
+    document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+    document.getElementById(views[v]).classList.add('active');
+    document.querySelectorAll('#demobar .seg button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('#demobar .seg button').forEach(b=>b.onclick=()=>goto(b.dataset.view));
+  document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>goto(b.dataset.goto));
+
+  // ---- member data ----
+  const members=[
+    {n:'佐藤 亮',t:'メーカー / 事業開発マネージャー',i:'BtoBの新規事業を担当。海外展開の立ち上げが得意です。',c:['経営'],
+      tags:['新規事業','海外展開','タイ進出'],give:'東南アジア進出の初期相談にのれます',seek:'現地パートナーの紹介'},
+    {n:'田村 佳奈',t:'制作会社 / アートディレクター',i:'ブランディングとWeb制作。中小企業の“らしさ”を形に。',c:['マーケ'],
+      tags:['ブランディング','Web制作','デザイン'],give:'ロゴ・サイトの方向性づくりを手伝えます',seek:'採用に強いライター'},
+    {n:'森 悠子',t:'IT企業 / 人事責任者',i:'50名規模の組織づくり。評価制度と1on1の運用が専門。',c:['人事'],
+      tags:['人事評価','組織開発','1on1'],give:'評価制度づくりの相談歓迎',seek:'労務に強い社労士'},
+    {n:'高橋 健',t:'税理士法人 / 代表社員',i:'スタートアップから中小企業まで、財務の伴走支援を。',c:['士業'],
+      tags:['税務','資金調達','財務'],give:'資金繰り・融資の初期相談OK',seek:'成長期の経営者仲間'},
+    {n:'中村 淳',t:'アイデンティティ / HRコンサルタント',i:'組織開発と人事評価。タイ在住経験あり。',c:['人事'],
+      tags:['人事評価','組織開発','HRテック'],give:'評価制度・1on1の型づくりを支援',seek:'開発パートナー'},
+    {n:'渡辺 誠',t:'SaaS企業 / エンジニアリングマネージャー',i:'プロダクト開発とAI活用。技術相談はお任せを。',c:['IT'],
+      tags:['開発','生成AI','プロダクト'],give:'技術選定・AI活用の壁打ち',seek:'toB営業の知見'},
+    {n:'小林 美咲',t:'広告代理店 / マーケティングプランナー',i:'デジタル広告とSNS運用の設計が本業です。',c:['マーケ'],
+      tags:['広告運用','SNS','マーケ戦略'],give:'集客・広告の相談にのれます',seek:'動画クリエイター'},
+    {n:'伊藤 大輔',t:'コンサルティング / 中小企業診断士',i:'事業計画と補助金申請の支援を数多く手がけています。',c:['士業','経営'],
+      tags:['事業計画','補助金','経営改善'],give:'補助金・事業計画の相談歓迎',seek:'DX事例の共有'},
+    {n:'山口 遥',t:'人材紹介 / キャリアアドバイザー',i:'ハイクラス採用が専門。採用と転職の両面を支援。',c:['人事'],
+      tags:['採用','転職','ダイレクトリクルーティング'],give:'採用設計・スカウトの相談OK',seek:'エンジニア母集団の広げ方'}
+  ];
+  const grid=document.getElementById('mgrid');
+  function initials(name){return name.replace(/\s/g,'')[0];}
+  function render(list){
+    grid.innerHTML=list.map((m,idx)=>`
+      <div class="mcard" data-idx="${members.indexOf(m)}">
+        <div class="top"><div class="ava">${initials(m.n)}</div>
+          <div><div class="name">${m.n}</div><div class="title">${m.t}</div></div></div>
+        <p class="oneline">${m.i}</p>
+        <div class="tags">${m.tags.map(t=>`<span class="tag skill">${t}</span>`).join('')}</div>
+        <div class="give">🤝 ${m.give}</div>
+      </div>`).join('');
+    grid.querySelectorAll('.mcard').forEach(c=>c.onclick=()=>openModal(members[c.dataset.idx]));
+  }
+  render(members);
+
+  // filter
+  let activeCat='all';
+  function applyFilter(){
+    const q=(document.getElementById('msearch').value||'').toLowerCase();
+    render(members.filter(m=>{
+      const catok=activeCat==='all'||m.c.includes(activeCat);
+      const text=(m.n+m.t+m.i+m.tags.join()).toLowerCase();
+      return catok && text.includes(q);
+    }));
+  }
+  document.getElementById('msearch').oninput=applyFilter;
+  document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');activeCat=b.dataset.f;applyFilter();
+  });
+
+  // modal
+  const overlay=document.getElementById('overlay'),modal=document.getElementById('modal');
+  function openModal(m){
+    modal.innerHTML=`
+      <button class="x" onclick="closeModal()">×</button>
+      <div class="mtop"><div class="ava">${initials(m.n)}</div>
+        <div><h3>${m.n}</h3><div class="title">${m.t}</div></div></div>
+      <div class="block"><div class="lbl">自己紹介</div><p>${m.i}</p></div>
+      <div class="block"><div class="lbl">強み・スキル</div><div class="tags">${m.tags.map(t=>`<span class="tag skill">${t}</span>`).join('')}</div></div>
+      <div class="block"><div class="lbl">力になれること</div><p>${m.give}</p></div>
+      <div class="block"><div class="lbl">いま探していること</div><p>${m.seek}</p></div>
+      <div class="actions"><button class="btn">💬 相談する</button><button class="btn ghost" onclick="closeModal()">閉じる</button></div>`;
+    overlay.classList.add('show');
+  }
+  function closeModal(){overlay.classList.remove('show');}
+  overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+
+  // member tabs
+  document.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('[data-mtab]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.mpanel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('mp-'+b.dataset.mtab).classList.add('active');
+  });
+  // admin tabs
+  document.querySelectorAll('[data-atab]').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('[data-atab]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.apanel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('ap-'+b.dataset.atab).classList.add('active');
+  });
+  // toggles
+  document.querySelectorAll('[data-toggle]').forEach(t=>t.onclick=()=>t.classList.toggle('on'));
+</script>
